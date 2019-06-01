@@ -1,17 +1,26 @@
 package com.sourcey.materiallogindemo;
 
+import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.test.espresso.Espresso;
+import android.support.test.espresso.Root;
 import android.support.test.espresso.ViewInteraction;
+import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.filters.LargeTest;
+import android.support.test.internal.util.Checks;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.WindowManager;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +28,6 @@ import org.junit.runner.RunWith;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -37,18 +45,56 @@ public class SignUpActivityTest {
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
+    public String name = "aaa";
+    public String address = "aaa";
+    public String email = "test@test.com";
+    public String mobile = "0123456789";
+    public String password = "0123456789";
+
     @Test
     public void signUpActivityTest() {
-        // Click Signup
         onView(withId(R.id.link_signup)).perform(click());
-        onView(withId(R.id.input_name)).perform(scrollTo(), typeText("aaa"), closeSoftKeyboard());
-        onView(withId(R.id.input_address)).perform(scrollTo(), replaceText("aaa"), closeSoftKeyboard());
-        onView(withId(R.id.input_email)).perform(scrollTo(), replaceText("test@test.com"), closeSoftKeyboard());
-        onView(withId(R.id.input_mobile)).perform(scrollTo(), replaceText("0123456789"), closeSoftKeyboard());
-        onView(withId(R.id.input_password)).perform(scrollTo(), replaceText("test1234"), closeSoftKeyboard());
-        onView(withId(R.id.input_reEnterPassword)).perform(scrollTo(), replaceText("test1234"), closeSoftKeyboard());
+        onView(withId(R.id.input_name)).perform(scrollTo(), typeText(name), closeSoftKeyboard());
+        onView(withId(R.id.input_address)).perform(scrollTo(), typeText(address), closeSoftKeyboard());
+        onView(withId(R.id.input_email)).perform(scrollTo(), typeText(email), closeSoftKeyboard());
+        onView(withId(R.id.input_mobile)).perform(scrollTo(), typeText(mobile), closeSoftKeyboard());
+        onView(withId(R.id.input_password)).perform(scrollTo(), typeText(password), closeSoftKeyboard());
+        onView(withId(R.id.input_reEnterPassword)).perform(scrollTo(), typeText(password), closeSoftKeyboard());
         onView(withId(R.id.btn_signup)).perform(scrollTo(), click());
 
+        waitPageLoading();
+        validateMainActivity();
+
+        //onView(withId(R.id.btn_logout)).perform(click());
+    }
+
+    @Test
+    public void login_Success(){
+        loginAction(email, password);
+        waitPageLoading();
+
+        validateMainActivity();
+        //onView(withId(R.id.btn_logout)).perform(click());
+    }
+
+    @Test
+    public void login_Failure(){
+        loginAction("test", "test1234");
+        //onView(withText(R.string.)).inRoot(withDecorView(not(mActivityRule.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()))
+    }
+
+    private static void loginAction(String email, String password){
+        onView(withId(R.id.input_email)).perform(typeText(email));
+        onView(withId(R.id.input_password)).perform(typeText(password));
+        onView(withId(R.id.btn_login)).perform(click());
+    }
+
+    private static void validateMainActivity(){
+        onView(withText("Hello world!")).check(matches(isDisplayed()));
+        onView(withId(R.id.btn_logout)).check(matches(isDisplayed()));
+    }
+
+    private static void waitPageLoading(){
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
@@ -57,23 +103,6 @@ public class SignUpActivityTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        onView(withText("Hello world!")).check(matches(withText("Hello world!")));
-        onView(withId(R.id.btn_logout)).check(matches(isDisplayed()));
-
-        onView(withId(R.id.btn_logout)).perform(click());
-
-        onView(withId(R.id.input_email)).perform(typeText("test@test.com"));
-        onView(withId(R.id.input_password)).perform(typeText("test1234"));
-        onView(withId(R.id.btn_login)).perform(click());
-
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        onView(withText("Hello world!")).check(matches(withText("Hello world!")));
     }
 /*
     private static Matcher<View> childAtPosition(
