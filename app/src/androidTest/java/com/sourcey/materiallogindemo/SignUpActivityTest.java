@@ -39,6 +39,7 @@ public class SignUpActivityTest {
 
     @Test
     public void signUpActivityTest() {
+        // Click Signup
         onView(withId(R.id.link_signup)).perform(click());
         onView(withId(R.id.input_name)).perform(scrollTo(), typeText("aaa"), closeSoftKeyboard());
         onView(withId(R.id.input_address)).perform(scrollTo(), replaceText("aaa"), closeSoftKeyboard());
