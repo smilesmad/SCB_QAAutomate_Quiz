@@ -3,34 +3,18 @@ package com.sourcey.materiallogindemo;
 import android.app.Application;
 import android.test.ApplicationTestCase;
 
-import android.os.IBinder;
-import android.support.annotation.NonNull;
-import android.support.test.espresso.Espresso;
-import android.support.test.espresso.Root;
-import android.support.test.espresso.ViewInteraction;
-import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.filters.LargeTest;
-import android.support.test.internal.util.Checks;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
-import android.view.WindowManager;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import junit.framework.TestCase;
-
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBackUnconditionally;
@@ -41,14 +25,12 @@ import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
  */
@@ -76,129 +58,219 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     }*/
 
     @Before
-    public void Setup() {
-        name = "aaa";
-        address = "aaa";
-        email = "test@test.com";
+    public void setup() {
+        name = "name";
+        address = "address";
+        email = "test@email.com";
         mobile = "0123456789";
         password = "0123456789";
-        repassword = "0123456789";
+        repassword = password;
+    }
+
+    @After
+    public void tearDown(){
+
     }
 
     @Test
-    public void signUpAndLogin_Success() {
-
+    public void TC101_signUp_Success() {
         signUp_AddInformationAndClickSignUp();
-
         waitPageLoading();
         validateMainActivity();
-
         onView(withId(R.id.btn_logout)).perform(click());
-
-        login_Success();
     }
 
-    public void login_Success(){
+    @Test
+    public void TC201_login_Success(){
         loginAction();
         waitPageLoading();
         validateMainActivity();
     }
 
     @Test
-    public void signUp_NameFailed() {
+    public void TC301_logout_Success(){
+        TC201_login_Success();
+        onView(withId(R.id.btn_logout)).perform(click());
+        onView(withId(R.id.link_signup)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void TC102_signUp_NameEmpty() {
         name = "";
         signUp_AddInformationAndClickSignUp();
         onView(withId(R.id.input_name)).check(matches(hasErrorText("at least 3 characters")));
     }
 
     @Test
-    public void signUp_EmptyAddress() {
+    public void TC103_signUp_NameLessThen3Char() {
+        name = "12";
+        signUp_AddInformationAndClickSignUp();
+        onView(withId(R.id.input_name)).check(matches(hasErrorText("at least 3 characters")));
+    }
+
+    @Test
+    public void TC104_signUp_AddressEmpty() {
         address = "";
         signUp_AddInformationAndClickSignUp();
         onView(withId(R.id.input_address)).check(matches(hasErrorText("Enter Valid Address")));
     }
 
     @Test
-    public void signUp_InvalidEmail() {
+    public void TC105_signUp_EmailEmpty() {
         email = "";
         signUp_AddInformationAndClickSignUp();
-        onView(withId(R.id.input_email)).check(matches(hasErrorText("enter a valid email address")));
+        validateEmailInvalid();
     }
 
     @Test
-    public void signUp_InvalidMobile() {
-        mobile = "0001245";
+    public void TC106_signUp_EmailInvalidFormat() {
+        email = "test@.";
         signUp_AddInformationAndClickSignUp();
-        onView(withId(R.id.input_mobile)).check(matches(hasErrorText("Enter Valid Mobile Number")));
+        validateEmailInvalid();
     }
 
     @Test
-    public void signUp_PasswordNotMatch() {
+    public void TC107_signUp_MobileInvalid() {
+        mobile = "aaaaaaaaaa";
+        signUp_AddInformationAndClickSignUp();
+        validateMobileError();
+    }
+
+    @Test
+    public void TC108_signUp_MobileEmpty() {
+        mobile = "";
+        signUp_AddInformationAndClickSignUp();
+        validateMobileError();
+    }
+
+    @Test
+    public void TC109_signUp_MobileLessThan10Char() {
+        mobile = "1025";
+        signUp_AddInformationAndClickSignUp();
+        validateMobileError();
+    }
+
+    @Test
+    public void TC109_signUp_MobileMoreThan10Char() {
+        mobile = "01234567891";
+        signUp_AddInformationAndClickSignUp();
+        validateMobileError();
+    }
+
+    @Test
+    public void TC110_signUp_PasswordEmpty() {
+        password = "";
+        repassword = password;
+        signUp_AddInformationAndClickSignUp();
+        validatePasswordError();
+    }
+
+    @Test
+    public void TC111_signUp_PasswordLessThan3Char() {
+        password = "55";
+        repassword = password;
+        signUp_AddInformationAndClickSignUp();
+        validatePasswordError();
+    }
+
+    @Test
+    public void TC112_signUp_PasswordMoreThan10Char() {
+        password = "123456789012";
+        repassword = password;
+        signUp_AddInformationAndClickSignUp();
+        validatePasswordError();
+    }
+
+    @Test
+    public void TC113_signUp_RePasswordNotMatch() {
         repassword = "5555";
         signUp_AddInformationAndClickSignUp();
         onView(withId(R.id.input_reEnterPassword)).check(matches(hasErrorText("Password Do not match")));
     }
 
     @Test
-    public void signUp_Cancel() {
-        signUp_AddInformation();
+    public void TC114_signUp_Cancel() {
+        clickSignUpLink();
         pressBackUnconditionally();
         onView(withId(R.id.btn_login)).check(matches(isDisplayed()));
     }
 
     @Test
-    public void signUp_ClickAlreadyMember() {
-        onView(withId(R.id.link_signup)).perform(click());
+    public void TC115_signUp_ClickAlreadyMember() {
+        clickSignUpLink();
         onView(withId(R.id.link_login)).perform(closeSoftKeyboard(), scrollTo(), click());
         onView(withId(R.id.btn_login)).check(matches(isDisplayed()));
     }
 
     @Test
-    public void login_InvalidEmail(){
-        email = "test";
-        loginAction();
-        onView(withId(R.id.input_email)).check(matches(hasErrorText("enter a valid email address")));
+    public void TC116_signUp_DuplicateData() {
+        signUp_AddInformationAndClickSignUp();
+        waitPageLoading();
+        onView(withId(R.id.input_name)).check(matches(isDisplayed()));
     }
 
     @Test
-    public void login_InvalidPasswordMinLength(){
+    public void TC202_login_EmailInvalidFormat(){
+        email = "test1@..";
+        loginAction();
+        validateEmailInvalid();
+    }
+
+    @Test
+    public void TC203_login_EmailEmpty(){
+        email = "";
+        loginAction();
+        validateEmailInvalid();
+    }
+
+    @Test
+    public void TC204_login_PasswordMinLength(){
         password = "tes";
         loginAction();
-        onView(withId(R.id.input_password)).check(matches(hasErrorText("between 4 and 10 alphanumeric characters")));
+        validatePasswordError();
     }
 
     @Test
-    public void login_InvalidPasswordMaxLength(){
-        password = "01234567891";
+    public void TC205_login_PasswordMaxLength(){
+        password = "123456789012";
         loginAction();
-        onView(withId(R.id.input_password)).check(matches(hasErrorText("between 4 and 10 alphanumeric characters")));
+        validatePasswordError();
     }
 
     @Test
-    public void login_InvalidPassword(){
+    public void TC206_login_PasswordInvalid(){
         password = "1234";
         loginAction();
         onView(withId(R.id.input_password)).check(matches(hasErrorText("enter a valid email address or password")));
     }
 
     @Test
-    public void login_EmptyEmail(){
-        email = "";
-        loginAction();
-        onView(withId(R.id.input_email)).check(matches(hasErrorText("enter a valid email address")));
-    }
-
-    @Test
-    public void login_EmptyPassword(){
+    public void TC207_login_PasswordEmpty(){
         password = "";
         loginAction();
-        onView(withId(R.id.input_password)).check(matches(hasErrorText("between 4 and 10 alphanumeric characters")));
+        validatePasswordError();
     }
 
     private static void loginAction(){
         onView(withId(R.id.input_email)).perform(typeText(email));
         onView(withId(R.id.input_password)).perform(typeText(password));
         onView(withId(R.id.btn_login)).perform(click());
+    }
+
+    private static void clickSignUpLink(){
+        onView(withId(R.id.link_signup)).perform(click());
+    }
+
+    private static void validateEmailInvalid(){
+        onView(withId(R.id.input_email)).check(matches(hasErrorText("enter a valid email address")));
+    }
+
+    private static void validatePasswordError(){
+        onView(withId(R.id.input_password)).check(matches(hasErrorText("between 4 and 10 alphanumeric characters")));
+    }
+
+    private static void validateMobileError(){
+        onView(withId(R.id.input_mobile)).check(matches(hasErrorText("Enter Valid Mobile Number")));
     }
 
     private static void validateMainActivity(){
@@ -223,12 +295,12 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     }
 
     private void signUp_AddInformation() {
-        onView(withId(R.id.link_signup)).perform(click());
-        onView(withId(R.id.input_name)).perform(scrollTo(), typeText(name), closeSoftKeyboard());
-        onView(withId(R.id.input_address)).perform(scrollTo(), typeText(address), closeSoftKeyboard());
-        onView(withId(R.id.input_email)).perform(scrollTo(), typeText(email), closeSoftKeyboard());
-        onView(withId(R.id.input_mobile)).perform(scrollTo(), typeText(mobile), closeSoftKeyboard());
-        onView(withId(R.id.input_password)).perform(scrollTo(), typeText(password), closeSoftKeyboard());
-        onView(withId(R.id.input_reEnterPassword)).perform(scrollTo(), typeText(repassword), closeSoftKeyboard());
+        clickSignUpLink();
+        onView(withId(R.id.input_name)).perform(typeText(name), closeSoftKeyboard());
+        onView(withId(R.id.input_address)).perform(typeText(address), closeSoftKeyboard());
+        onView(withId(R.id.input_email)).perform(typeText(email), closeSoftKeyboard());
+        onView(withId(R.id.input_mobile)).perform(typeText(mobile), closeSoftKeyboard());
+        onView(withId(R.id.input_password)).perform(typeText(password), closeSoftKeyboard());
+        onView(withId(R.id.input_reEnterPassword)).perform(typeText(repassword), closeSoftKeyboard());
     }
 }
