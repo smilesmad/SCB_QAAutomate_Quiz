@@ -1,11 +1,13 @@
 package com.sourcey.materiallogindemo;
 
 import android.app.Application;
+import android.support.test.espresso.NoMatchingViewException;
 import android.test.ApplicationTestCase;
 
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.util.Log;
 
 import org.junit.After;
 import org.junit.Before;
@@ -91,28 +93,29 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     public void TC301_logout_Success(){
         TC201_login_Success();
         onView(withId(R.id.btn_logout)).perform(click());
-        onView(withId(R.id.link_signup)).check(matches(isDisplayed()));
+        onView(withId(R.id.input_email)).check(matches(isDisplayed())).perform(closeSoftKeyboard());
+        onView(withId(R.id.btn_login)).check(matches(isDisplayed()));
     }
 
     @Test
     public void TC102_signUp_NameEmpty() {
         name = "";
         signUp_AddInformationAndClickSignUp();
-        onView(withId(R.id.input_name)).check(matches(hasErrorText("at least 3 characters")));
+        onView(withId(R.id.input_name)).perform(scrollTo()).check(matches(hasErrorText("at least 3 characters")));
     }
 
     @Test
-    public void TC103_signUp_NameLessThen3Char() {
+    public void TC103_signUp_NameLessThan3Char() {
         name = "12";
         signUp_AddInformationAndClickSignUp();
-        onView(withId(R.id.input_name)).check(matches(hasErrorText("at least 3 characters")));
+        onView(withId(R.id.input_name)).perform(scrollTo()).check(matches(hasErrorText("at least 3 characters")));
     }
 
     @Test
     public void TC104_signUp_AddressEmpty() {
         address = "";
         signUp_AddInformationAndClickSignUp();
-        onView(withId(R.id.input_address)).check(matches(hasErrorText("Enter Valid Address")));
+        onView(withId(R.id.input_address)).perform(scrollTo()).check(matches(hasErrorText("Enter Valid Address")));
     }
 
     @Test
@@ -131,7 +134,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     @Test
     public void TC107_signUp_MobileInvalid() {
-        mobile = "aaaaaaaaaa";
+        mobile = "01234567891";
         signUp_AddInformationAndClickSignUp();
         validateMobileError();
     }
@@ -192,13 +195,16 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     public void TC114_signUp_Cancel() {
         clickSignUpLink();
         pressBackUnconditionally();
+        onView(withId(R.id.input_email)).check(matches(isDisplayed())).perform(closeSoftKeyboard());
         onView(withId(R.id.btn_login)).check(matches(isDisplayed()));
     }
 
     @Test
     public void TC115_signUp_ClickAlreadyMember() {
         clickSignUpLink();
-        onView(withId(R.id.link_login)).perform(closeSoftKeyboard(), scrollTo(), click());
+        onView(withId(R.id.input_name)).perform(closeSoftKeyboard());
+        onView(withId(R.id.link_login)).perform(scrollTo(), click());
+        onView(withId(R.id.input_email)).check(matches(isDisplayed())).perform(closeSoftKeyboard());
         onView(withId(R.id.btn_login)).check(matches(isDisplayed()));
     }
 
@@ -252,13 +258,14 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     }
 
     private static void loginAction(){
-        onView(withId(R.id.input_email)).perform(typeText(email));
-        onView(withId(R.id.input_password)).perform(typeText(password));
+        onView(withId(R.id.input_email)).perform(typeText(email), closeSoftKeyboard());
+        onView(withId(R.id.input_password)).perform(typeText(password), closeSoftKeyboard());
         onView(withId(R.id.btn_login)).perform(click());
     }
 
     private static void clickSignUpLink(){
-        onView(withId(R.id.link_signup)).perform(click());
+        onView(withId(R.id.input_email)).check(matches(isDisplayed())).perform(closeSoftKeyboard());
+        onView(withId(R.id.link_signup)).perform(scrollTo(), click());
     }
 
     private static void validateEmailInvalid(){
