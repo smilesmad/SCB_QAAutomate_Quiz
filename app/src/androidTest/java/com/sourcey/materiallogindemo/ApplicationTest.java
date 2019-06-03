@@ -76,43 +76,83 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     @Test
     public void TC101_signUp_Success() {
+        //Verify sign up successfully
+
+        //Singup
         signUp_AddInformationAndClickSignUp();
+
+        //Wait main page load
         waitPageLoading();
+
+        //validate main page loaded successfully
         validateMainActivity();
+
+        //Click logout
         onView(withId(R.id.btn_logout)).perform(click());
     }
 
     @Test
     public void TC201_login_Success(){
+        // Verify valid user can login successfully.
+
+        //Login
         loginAction();
+
+        //Wait main page load
         waitPageLoading();
+
+        //validate main page loaded successfully
         validateMainActivity();
     }
 
     @Test
     public void TC301_logout_Success(){
+        // Verify logout button works correctly
+
+        //Login
         TC201_login_Success();
+
+        // 4.Click Logout button
         onView(withId(R.id.btn_logout)).perform(click());
+
+        //Login page displays
         onView(withId(R.id.input_email)).check(matches(isDisplayed())).perform(closeSoftKeyboard());
         onView(withId(R.id.btn_login)).check(matches(isDisplayed()));
     }
 
     @Test
     public void TC102_signUp_NameEmpty() {
+        // Verify name field cannot be blank
+
+        //Setup name = ""
         name = "";
+
+        //Sign up
         signUp_AddInformationAndClickSignUp();
+
+        //Check error
         onView(withId(R.id.input_name)).perform(scrollTo()).check(matches(hasErrorText("at least 3 characters")));
     }
 
     @Test
     public void TC103_signUp_NameLessThan3Char() {
+        //Verify minimum of name's length is 3 characters
+
+        // set name
         name = "12";
+
+        //Sign up
         signUp_AddInformationAndClickSignUp();
+
+        //Check error
         onView(withId(R.id.input_name)).perform(scrollTo()).check(matches(hasErrorText("at least 3 characters")));
     }
 
     @Test
     public void TC104_signUp_AddressEmpty() {
+        //Verify address field cannot be blank
+
+        //clear address
         address = "";
         signUp_AddInformationAndClickSignUp();
         onView(withId(R.id.input_address)).perform(scrollTo()).check(matches(hasErrorText("Enter Valid Address")));
@@ -120,6 +160,9 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     @Test
     public void TC105_signUp_EmailEmpty() {
+        //Verify email field cannot be blank
+
+        //clear email
         email = "";
         signUp_AddInformationAndClickSignUp();
         validateEmailInvalid();
@@ -127,6 +170,9 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     @Test
     public void TC106_signUp_EmailInvalidFormat() {
+        //Verify email's format should be correct.
+
+        //set new email
         email = "test@.";
         signUp_AddInformationAndClickSignUp();
         validateEmailInvalid();
@@ -134,6 +180,9 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     @Test
     public void TC107_signUp_MobileEmpty() {
+        //Verify mobile field cannot be blank
+
+        //clear mobile
         mobile = "";
         signUp_AddInformationAndClickSignUp();
         validateMobileError();
@@ -141,6 +190,9 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     @Test
     public void TC108_signUp_MobileLessThan10Char() {
+        //Verify mobile number must have 10 digits
+
+        //set mobile
         mobile = "0123";
         signUp_AddInformationAndClickSignUp();
         validateMobileError();
@@ -148,6 +200,9 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     @Test
     public void TC109_signUp_MobileMoreThan10Char() {
+        //Verify mobile number must have 10 digits
+
+        //set mobile
         mobile = "01234567891";
         signUp_AddInformationAndClickSignUp();
         validateMobileError();
@@ -155,6 +210,9 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     @Test
     public void TC110_signUp_PasswordEmpty() {
+        //Verify password field cannot be blank
+
+        //clear password
         password = "";
         repassword = password;
         signUp_AddInformationAndClickSignUp();
@@ -163,7 +221,10 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     @Test
     public void TC111_signUp_PasswordLessThan4Char() {
-        password = "55";
+        //Verify minimum of password's length is 4 characters
+
+        //Set new password
+        password = "555";
         repassword = password;
         signUp_AddInformationAndClickSignUp();
         validatePasswordError();
@@ -171,6 +232,9 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     @Test
     public void TC112_signUp_PasswordMoreThan10Char() {
+        //Verify maximum of password's length is 10 characters
+
+        //Set new password
         password = "123456789012";
         repassword = password;
         signUp_AddInformationAndClickSignUp();
@@ -179,6 +243,9 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     @Test
     public void TC113_signUp_RePasswordNotMatch() {
+        //Verify repassword must be match with password
+
+        //Set new repassword
         repassword = "5555";
         signUp_AddInformationAndClickSignUp();
         onView(withId(R.id.input_reEnterPassword)).check(matches(hasErrorText("Password Do not match")));
@@ -186,16 +253,26 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     @Test
     public void TC114_signUp_Cancel() {
+        //Press back on signup page must redirect to login page
         clickSignUpLink();
+
+        //Close keyboard
         onView(withId(R.id.input_name)).perform(closeSoftKeyboard());
+
+        //press back
         pressBackUnconditionally();
+
+        //Wait page
         waitPageLoading();
+
+        //Validate login page
         onView(withId(R.id.input_email)).check(matches(isDisplayed())).perform(closeSoftKeyboard());
         onView(withId(R.id.btn_login)).check(matches(isDisplayed()));
     }
 
     @Test
     public void TC115_signUp_ClickAlreadyMember() {
+        //Verify 'Already member' link work properly
         clickSignUpLink();
         onView(withId(R.id.input_name)).perform(closeSoftKeyboard());
         onView(withId(R.id.link_login)).perform(scrollTo(), click());
@@ -205,13 +282,20 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     @Test
     public void TC116_signUp_DuplicateData() {
+        //Verify when sign up the same information must be error
+
         signUp_AddInformationAndClickSignUp();
         waitPageLoading();
+
+        //After click signup, it should stay with SignUp page
         onView(withId(R.id.input_name)).check(matches(isDisplayed()));
     }
 
     @Test
     public void TC202_login_EmailInvalidFormat(){
+        //Verify invalid email format must show error
+
+        //set email
         email = "test1@..";
         loginAction();
         validateEmailInvalid();
@@ -219,6 +303,9 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     @Test
     public void TC203_login_EmailEmpty(){
+        //Verify email field cannot be blank
+
+        //clear email
         email = "";
         loginAction();
         validateEmailInvalid();
@@ -226,6 +313,9 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     @Test
     public void TC204_login_PasswordMinLength(){
+        //Verify minimum of password's length is 4 characters
+
+        //set password
         password = "tes";
         loginAction();
         validatePasswordError();
@@ -233,6 +323,9 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     @Test
     public void TC205_login_PasswordMaxLength(){
+        //Verify maximum of password's length is 10 characters
+
+        //set password
         password = "123456789012";
         loginAction();
         validatePasswordError();
@@ -240,6 +333,9 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     @Test
     public void TC206_login_PasswordInvalid(){
+        //Verify invalid password cannot access to system
+
+        //set password
         password = "1234";
         loginAction();
         onView(withId(R.id.input_password)).check(matches(hasErrorText("enter a valid email address or password")));
@@ -247,35 +343,47 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     @Test
     public void TC207_login_PasswordEmpty(){
+        //Verify password field cannot be blank
+
+        //clear password
         password = "";
         loginAction();
         validatePasswordError();
     }
 
     private static void loginAction(){
+        // 1.Enter valid registered email
+        // 2.Enter valid password
+        // 3.Click Login button
+
         onView(withId(R.id.input_email)).perform(typeText(email), closeSoftKeyboard());
         onView(withId(R.id.input_password)).perform(typeText(password), closeSoftKeyboard());
         onView(withId(R.id.btn_login)).perform(click());
     }
 
     private static void clickSignUpLink(){
+        // Click Signup link
         onView(withId(R.id.input_email)).check(matches(isDisplayed())).perform(closeSoftKeyboard());
         onView(withId(R.id.link_signup)).perform(scrollTo(), click());
     }
 
     private static void validateEmailInvalid(){
+        //Validate error, enter a valid email address
         onView(withId(R.id.input_email)).check(matches(hasErrorText("enter a valid email address")));
     }
 
     private static void validatePasswordError(){
+        //Validate error, between 4 and 10 alphanumeric characters
         onView(withId(R.id.input_password)).check(matches(hasErrorText("between 4 and 10 alphanumeric characters")));
     }
 
     private static void validateMobileError(){
+        //Validate error Enter Valid Mobile Number
         onView(withId(R.id.input_mobile)).check(matches(hasErrorText("Enter Valid Mobile Number")));
     }
 
     private static void validateMainActivity(){
+        //On Main page should have 'Hello World' and logout button
         onView(withText("Hello world!")).check(matches(isDisplayed()));
         onView(withId(R.id.btn_logout)).check(matches(isDisplayed()));
     }
@@ -293,10 +401,14 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     private void signUp_AddInformationAndClickSignUp() {
         signUp_AddInformation();
+
+        // 3.Click 'Sign up'
         onView(withId(R.id.btn_signup)).perform(scrollTo(), click());
     }
 
     private void signUp_AddInformation() {
+        // 1.Click 'Signup' link
+        // 2.Add informaion
         clickSignUpLink();
         onView(withId(R.id.input_name)).perform(typeText(name), closeSoftKeyboard());
         onView(withId(R.id.input_address)).perform(typeText(address), closeSoftKeyboard());
