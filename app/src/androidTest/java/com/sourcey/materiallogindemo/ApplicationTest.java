@@ -133,21 +133,14 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     }
 
     @Test
-    public void TC107_signUp_MobileInvalid() {
-        mobile = "01234567891";
-        signUp_AddInformationAndClickSignUp();
-        validateMobileError();
-    }
-
-    @Test
-    public void TC108_signUp_MobileEmpty() {
+    public void TC107_signUp_MobileEmpty() {
         mobile = "";
         signUp_AddInformationAndClickSignUp();
         validateMobileError();
     }
 
     @Test
-    public void TC109_signUp_MobileLessThan10Char() {
+    public void TC108_signUp_MobileLessThan10Char() {
         mobile = "1025";
         signUp_AddInformationAndClickSignUp();
         validateMobileError();
