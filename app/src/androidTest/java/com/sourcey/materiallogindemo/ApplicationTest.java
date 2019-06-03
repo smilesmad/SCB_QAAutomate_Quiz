@@ -1,27 +1,27 @@
 package com.sourcey.materiallogindemo;
 
 import android.app.Application;
-import android.support.test.espresso.NoMatchingViewException;
-import android.support.test.espresso.matcher.BoundedMatcher;
+//import android.support.test.espresso.NoMatchingViewException;
+//import android.support.test.espresso.matcher.BoundedMatcher;
 import android.test.ApplicationTestCase;
 
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.view.View;
-import android.widget.EditText;
+//import android.view.View;
+//import android.widget.EditText;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.Description;
+//import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 
-import java.util.regex.Matcher;
+//import java.util.regex.Matcher;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBackUnconditionally;
@@ -34,7 +34,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static android.support.test.espresso.matcher.BoundedMatcher.*;
+//import static android.support.test.espresso.matcher.BoundedMatcher.*;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
