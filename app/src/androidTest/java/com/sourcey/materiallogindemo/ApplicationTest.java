@@ -2,21 +2,26 @@ package com.sourcey.materiallogindemo;
 
 import android.app.Application;
 import android.support.test.espresso.NoMatchingViewException;
+import android.support.test.espresso.matcher.BoundedMatcher;
 import android.test.ApplicationTestCase;
 
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
+
+import java.util.regex.Matcher;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBackUnconditionally;
@@ -29,6 +34,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static android.support.test.espresso.matcher.BoundedMatcher.*;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -71,7 +77,6 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     @After
     public void tearDown(){
-
     }
 
     @Test
@@ -152,10 +157,18 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     public void TC104_signUp_AddressEmpty() {
         //Verify address field cannot be blank
 
+        //set name
+        name = "nam";
         //clear address
         address = "";
+        //set password and repassword
+        password = "1234";
+        password = repassword;
+
         signUp_AddInformationAndClickSignUp();
         onView(withId(R.id.input_address)).perform(scrollTo()).check(matches(hasErrorText("Enter Valid Address")));
+        //onView(withId(R.id.input_name)).check(matches(hasNoErrorText()));
+        //onView(withId(R.id.input_password)).check(matches(hasNoErrorText()));
     }
 
     @Test
@@ -417,4 +430,19 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
         onView(withId(R.id.input_password)).perform(typeText(password), closeSoftKeyboard());
         onView(withId(R.id.input_reEnterPassword)).perform(typeText(repassword), closeSoftKeyboard());
     }
+
+/*    public static Matcher<View> hasNoErrorText() {
+        return new BoundedMatcher<View, EditText>(EditText.class) {
+
+            @Override
+            public void describeTo(Description description) {
+               // description.appendText("has no error text");
+            }
+
+            @Override
+            protected boolean matchesSafely(EditText view) {
+                return view.getError() == null;
+            }
+        };
+    }*/
 }
