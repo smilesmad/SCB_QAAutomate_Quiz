@@ -141,7 +141,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     @Test
     public void TC108_signUp_MobileLessThan10Char() {
-        mobile = "1025";
+        mobile = "0123";
         signUp_AddInformationAndClickSignUp();
         validateMobileError();
     }
@@ -162,7 +162,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     }
 
     @Test
-    public void TC111_signUp_PasswordLessThan3Char() {
+    public void TC111_signUp_PasswordLessThan4Char() {
         password = "55";
         repassword = password;
         signUp_AddInformationAndClickSignUp();
