@@ -195,6 +195,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     public void TC114_signUp_Cancel() {
         clickSignUpLink();
         pressBackUnconditionally();
+        waitPageLoading();
         onView(withId(R.id.input_email)).check(matches(isDisplayed())).perform(closeSoftKeyboard());
         onView(withId(R.id.btn_login)).check(matches(isDisplayed()));
     }
