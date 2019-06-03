@@ -13,7 +13,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
+//import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 //import org.junit.runner.Description;
